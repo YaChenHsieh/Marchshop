@@ -1,0 +1,79 @@
+<style>
+  .form-label-group
+{ 
+  margin:15px;
+  padding:15px;
+  text-align:center;
+}
+
+.form-signin
+{ 
+  height: 640px;
+  width: 360px;
+  border: 3px solid gray;
+  padding:15px;
+  text-align: center;
+  position: relative;
+  left:30%;
+}
+
+.checkbox
+{
+  margin-bottom: 10px;
+}
+
+.create-button
+{
+  margin: 10px;
+}
+
+.yumpic
+{
+  margin:0;
+  padding:0;
+}
+
+</style>
+
+{{#if loginTF}}
+<div class="alert alert-{{type}}">{{msg}}</div>
+{{/if}}
+
+{{!-- (#if results成立=>發生後面事項，else＝>發生後方事項) --}}
+{{#if loginUser}}
+<h2 class="row align-items-center justify-content-center">Hello {{loginUser.Name}}</h2>
+<h2>Contact number : {{loginUser.Phone}}</h2>
+<h2>Login time : {{time}}</h2>
+{{else}}
+
+<form method="post" class="form-signin">
+
+  <div class="text-center mb-4">
+    
+    <img class="yumpic" src="/img/yum.jpg" alt="" width="150" height="150">
+    <h2 class="Welcome">Welcome</h2>
+    <p>Please login</p>
+
+    <div class="form-label-group">
+      <input type="phone" id="phone" name="phone" class="form-control" placeholder="Phone number" required autofocus>
+    </div>
+
+    <div class="form-label-group">
+      <input type="password" id="password" name="password" class="form-control" placeholder="Password" required>
+    </div>
+
+    <div class="checkbox">
+      <input type="checkbox" value="remember-me"> Remember me
+    </div>
+
+    <button class="btn btn-primary btn-block" type="submit">Login</button>
+
+    <div class="divider"></div>
+
+    <div class="create-button">
+    <button type="button" class="btn btn-secondary btn-block"><a class="create" style="color:white" href="/create-my-account">Creare Account</a></button>
+    </div>
+
+  </div>
+</form>
+{{/if}}

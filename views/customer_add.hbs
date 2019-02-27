@@ -1,0 +1,220 @@
+<style>
+  .form-group
+{
+  margin:10px;
+}
+.form-div
+{
+  max-width: 50%;
+  border: 3px solid gray;
+}
+
+.yumpic
+{
+  margin:0;
+  padding:0;
+  text-align: center;
+}
+
+</style>
+
+<div id="info" class="alert" style="display:none"></div>
+
+
+<div class="form-div container">
+  <form class="" id="creatform" name="form-add" method="post" onsubmit="return checkForm()">
+
+
+    <div class="yumpic">
+      <img src="/img/yum.jpg" alt="" width="150" height="150">
+    </div>
+
+    <div class="form-group">
+      <label for="name">Name : </label><span id="checkname"></span>
+      <input type="text" class="form-control" id="name" value="{{name}}" name="name">
+    </div>
+
+    <div class="form-group">
+      <label for="email">Email :</label><span id="checkemail"></span>
+      <input type="text" class="form-control" id="email" value="{{val.email}}" name="email">
+    </div>
+
+    <div class="form-group">
+      <label for="password">Password :</label><span id="checkpassword"></span>
+      <input type="password" class="form-control" id="password" value="{{val.password}}" name="password" placeholder="長度6-15,不可輸入空白鍵"
+        autocomplete="off">
+    </div>
+
+    <div class="form-group">
+      <label for="repassword">Re-enter password :</label>
+      <input type="password" class="form-control" id="repassword" name="repassword">
+    </div>
+
+
+
+    <div class="form-group">
+      <label for="phone">Phone : </label><span id="checkphone"></span>
+      <input type="text" class="form-control" id="phone" value="{{val.phone}}" name="phone">
+    </div>
+
+    <div class="form-group">
+      <button type="submit" class="btn btn-primary btn-block">Submit</button>
+    </div>
+  </form>
+</div>
+
+<script>
+  const info = $("#info");
+  const phonenum = /^09([0-9]{8})$/;
+  const passwordnum = /^(?=.*\d)(?=.*[a-zA-Z]).{6,15}$/;
+
+
+  const ajaxflag = [0, 0];//ajaxflag /bc 如果只有true or false 在後ajax判斷phone & email時，後方的執會把前方的值洗掉
+
+  function checkForm() {
+
+    var isPass = true;
+
+    info.hide();
+    console.log("ok");
+
+
+    if (!$("#name").val()) {
+      $("#checkname").html("<i class='fas fa-times-circle'>請填寫姓名!</i>").css("color", "red");
+      isPass = false;
+    }
+    if ($("#name").val()) {
+      $("#checkname").html("");
+
+    }
+
+    if (!$("#email").val()) {
+      $("#checkemail").html("<i class='fas fa-times-circle'>請填寫email</i>").css("color", "blue");
+      isPass = false;
+    }
+    if ($("#email").val()) {
+      $("#checkemail").html("");
+
+    }
+
+    if (!$("#password").val()) {
+      $("#checkpassword").html("<i class='fas fa-times-circle'>請填寫密碼!</i>").css("color", "green");
+      isPass = false;
+    }
+    if ($("#password").val()) {
+      $("#checkpassword").html("");
+
+    }
+
+    if ($("#repassword").val() !== $("#password").val()) {
+      info.removeClass("alert-success");
+      info.addClass("alert-danger");
+      info.show();
+      info.html("密碼驗證錯誤");
+      isPass = false;
+    }
+    if ($("#repassword").val() === $("#password").val()) {
+      info.html("");
+    }
+
+    if (!$("#phone").val()) {
+      $("#checkphone").html("<i class='fas fa-times-circle'>請填寫手機號碼</i>").css("color", "orange");
+      isPass = false;
+    }
+    if ($("#phone").val()) {
+      $("#checkphone").html("");
+    }
+    //表單確認都有填完
+    //開始驗證表單格式是否正確
+
+    // 如果不加 $("#phone").val()=> 表格未輸入時，後方!phonenum.test($("#phone").val()會蓋掉前方,即為若沒輸入時，電腦會說格式錯誤，而非表格未填寫
+    if ($("#phone").val() && !phonenum.test($("#phone").val())) {
+      $("#checkphone").html("<i class='fas fa-times-circle'>手機格式有誤!</i>").css("color", "orange");
+      isPass = false;
+    }
+    if ($("#phone").val() && phonenum.test($("#phone").val())) {
+      $("#checkphone").html("");
+    }
+    if ($("#password").val() && !passwordnum.test($("#password").val())) {
+      $("#checkpassword").html("<i class='fas fa-times-circle'>密碼格式有誤!</i>").css("color", "green");
+      isPass = false;
+    }
+    if ($("#password").val() && passwordnum.test($("#password").val())) {
+      $("#checkpassword").html("");
+    }
+
+    //透過for迴圈取代 if(ajaxflag is true)
+    for (y = 0; y < ajaxflag.length; y++) {
+      if (ajaxflag[y] == 0) {
+        isPass = false
+        //console.log("check1");
+        //console.log(ajaxflag);
+        //console.log(ajaxflag[0]);
+        //console.log(ajaxflag[1]);
+        //console.log("check[0][1]");
+
+        if (ajaxflag[0] == 0) {
+          $("#checkemail").html(`<i class='fas fa-times-circle'>前端信箱已被使用過!</i>`).css("color", "blue");
+        }
+
+        if (ajaxflag[1] == 0) {
+          $("#checkphone").html(`<i class='fas fa-times-circle'>前端手機已被註冊!</i>`).css("color", "orange");
+        }
+        
+        break;
+      }
+    }//ajax部分的isPass
+
+    //console.log("check2" + isPass);
+    //console.log("ajax");
+    //console.log(ajaxflag);
+    return isPass;
+  }//function checkfrom end
+
+
+  //上方條件限制判別完後(前端判別)，要連接前後端去同步驗證是否後端資料庫的資料已經存在
+  //1. 先建立一個 function, 不寫死參數內容=>之後只要更改參數值即可共用 chackajax("#phone"), checkajax("#email") =>此處就故意將()內改用x參數取代
+  //2. function內容 => ajax的post=>拿著資料(資料在按下submit時已經帶有資料,前方檢查都只是帶著資料做審查) $.post(url,data(serialize打包要去後方資料庫的),後方查詢完後回來的callback(response,status,xhr),json) || 後方db.query("要資料庫執行的內容select*.. or delete..from" , [req.body.想要電腦要進資料庫查詢的參數內容] , callback(error,results,fields) )
+  function checkajax(x) {
+    $.post("/create-my-account",
+      $(x).serialize(),
+      function (res, status, xhr) {
+        if (res.emailflag == false) {
+          $("#checkemail").html(`<i class='fas fa-times-circle'>${res.info}</i>`).css("color", "blue")
+          ajaxflag[0] = 0;//add for ajaxcheck
+
+          //console.log("check3");
+          //console.log(ajaxflag);
+        }
+        else if (res.emailflag == true) {
+          $("#checkemail").html("")
+          ajaxflag[0] = 1;
+          //console.log("check4");
+          //console.log(ajaxflag);
+        }
+        else if (res.phoneflag == false) {
+          $("#checkphone").html(`<i class='fas fa-times-circle'>${res.info}</i>`).css("color", "orange")
+          ajaxflag[1] = 0;//add for ajaxcheck
+        }
+        else if (res.phoneflag == true) {
+          $("#checkphone").html("");
+          ajaxflag[1] = 1;
+        }
+
+      }, "json")
+  }
+
+  $("#email").on("change", function () {
+    checkajax("#email");
+  });
+
+  $("#phone").on("change", function () {
+    checkajax("#phone")
+
+  })
+
+
+
+
+
+</script>

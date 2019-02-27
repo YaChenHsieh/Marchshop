@@ -1,0 +1,20 @@
+<table class="table table-bordered table-dark">
+  <thead>
+    <tr>
+      <th scope="col">Order_No.</th>
+      <th scope="col">Product</th>
+      <th scope="col">Quantity</th>
+      <th scope="col">Purchase Time</th>
+    </tr>
+  </thead>
+  {{#each purchase}}
+  <tbody>
+    <tr>
+      <th scope="row">{{o_id}}</th>
+      <td>{{P_name}}</td>
+      <td>{{Qty}}</td>
+      <td>{{P_Time}}</td>
+    </tr>
+  </tbody>
+   {{/each}}
+</table>

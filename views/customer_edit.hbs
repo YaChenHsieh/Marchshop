@@ -1,0 +1,108 @@
+<div id="info" class="alert" style="display:none"></div>
+
+
+<form method="post" id="form1" onsubmit="return checkForm()">
+
+  {{#with item}}
+  <input type="hidden" id="c_id" name="c_id" value="{{c_id}}">
+
+  <div class="form-group">
+    <label for="name">Name : </label>
+    <input type="text" class="form-control" id="name" value="{{Name}}" name="name" autocomplete="off">
+  </div>
+
+  <div class="form-group">
+    <label for="email">Email :</label>
+    <input type="text" class="form-control" id="email" value="{{Email}}" name="email">
+  </div>
+
+  <div class="form-group">
+    <label for="password">Password :</label>
+    <input type="password" class="form-control" id="password" value="{{Password}}" name="password" autocomplete="off">
+  </div>
+
+  <div class="form-group">
+    <label for="phone">Phone : </label>
+    <input type="text" class="form-control" id="phone" value="{{Phone}}" name="phone">
+  </div>
+
+  <button type="submit" class="btn btn-primary">Edit</button>
+  {{/with}}
+
+</form>
+
+<script>
+  const info = $("#info");
+  const phonenum = /^09[0-9]{8}$/;
+
+  function checkForm() {
+
+    info.hide(); //先把info隱藏
+
+    if (!$("#name").val()) //用#id .class
+    {
+      info.removeClass("alert-success");
+      info.addClass("alert-danger");
+      info.show(); //show出
+      info.html("請填姓名");
+      return false; //return=>因為使用if,所以不給return會持續做下去  ;  回傳false是因為onsubmit事件，告訴他不要送出
+    }
+    if (!$("#email").val()) {
+      info.removeClass("alert-success");
+      info.addClass("alert-danger");
+      info.show(); //show出
+      info.html("請填信箱");
+      return false;
+    }
+    if (!$("#password").val()) {
+      info.removeClass("alert-success");
+      info.addClass("alert-danger");
+      info.show(); //show出
+      info.html("請填密碼");
+      return false;
+    }
+    if (!$("#phone").val()) {
+      info.removeClass("alert-success");
+      info.addClass("alert-danger");
+      info.show(); //show出
+      info.html("請填電話");
+      return false;
+    }
+
+    const aa = phonenum.test($("#phone").val());
+    console.log(aa);
+    console.log("aa");
+
+    if (!phonenum.test($("#phone").val())) {
+      info.removeClass("alert-success");
+      info.addClass("alert-danger");
+      info.show(); //show出
+      info.html("請填入正確電話格式");
+      return false;
+    }
+
+
+    //{data}上方form的資料，我要透過serialize打包之後，丟到後端讓他們處理。先找到form的定位，就可以取得整個form的值
+    $.post("/customer/edit/" + $("#c_id").val(), $("#form1").serialize(),
+      function (res, status, xhr) {
+        console.log("check.res")
+        console.log(res);
+        console.log("hello"); //去前端網頁conslog才看得到
+        info.hide();
+        if (res.success == false) {
+          window.alert(res.info);
+        }
+        else if (res.success == true) {
+          window.alert(res.info);
+        }
+      }
+      ,
+      "json")
+    //上方跑完沒問題後，進入$.post，取得/路徑/& (serialize)的資料後，就跑去後端，等候端query拿出值後，就可以做function(res,sta,xhr),res就是從後端資料庫來的
+    return false; //此處return false 是為了不讓onsubmit也在提交一次表單(button有submit一次了)
+  }
+
+
+
+
+</script>
