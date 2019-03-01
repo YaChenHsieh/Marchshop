@@ -70,7 +70,8 @@ app.use("/member", require("./my_routers/member.js"));
 //loginUser 的  middleware 建立==================================
 app.use((request, response, next) => {
     response.locals.cdata = {
-        loginUser: request.session.loginUser
+        loginUser: request.session.loginUser,
+        logintime: request.session.logintime
     };
     next();
 });
@@ -127,6 +128,7 @@ app.get('/logout', (request, response) => {
     delete request.session.loginUser;
     delete request.session.logintime;
     delete request.session.FlyMsg;
+    delete response.locals.cdata;
     console.log("=================logout===============")
     console.log(request.session)
     response.redirect('/login');
@@ -182,7 +184,7 @@ app.post("/try-post2", (request, response) => {
 
 // 製作上傳檔案 //
 app.get('/try-upload', (request, response) => {
-    const data = response.locals.renderData;
+    const data = response.locals.cdata;
 
     response.render('try-upload', data);
 });
@@ -236,14 +238,20 @@ app.get("/try-moment", (request, response) => {
 
     response.end();//記得寫end,否則他會一直不結束
 });
+//root add items====
+app.use("/root", require("./my_routers/itemadd.js"))
+
 //=============================================20190123
 //Create Shopcart
 app.get("/shop", (req, res) => {
-
+    console.log("req.session in shoppppppp")
+    console.log(req.session)
+    console.log("=================loginUser in shop=====")
+    console.log(req.session.loginUser)
     db.query("SELECT * FROM pro_list", (error, results, fields) => {
         console.log("into shopitem db");
         console.log(results);
-        res.render("shop.hbs", { shopitems: results })
+        res.render("shop.hbs", { shopitems: results, member: req.session })
 
     });//db.queryend
 
@@ -251,23 +259,104 @@ app.get("/shop", (req, res) => {
 })//app.get & (req,res) end
 
 app.post('/qqq', (req, res) => { //前端的請求，丟在req=我可以選擇是否去用 ; res回應給前端
-    console.log("後端收到得直,total,item, price, Q")
-    console.log(req.body);
-
-    let val = {
-        total: req.body.total,
-        item: req.body.item,
-        price: req.body.price,
-        quantity: req.body.qty
+    console.log("LOGIN or NOT=========")
+    console.log(req.session.loginUser)
+    console.log("LOGIN or NOT")
+    if (!req.session.loginUser) {
+        console.log("COMING NULLLLLLL+++++++++++++++++++++++++++++")
+        res.redirect("/login");
     }
-    console.log("val")
-    console.log(val)
-    res.end()
-})
+    else {
+        console.log("後端收到得直,total,item, price, Q")
+        //const shopdetail = JSON.parse(JSON.stringify(req.body));
+        console.log("req.body");
+        console.log(req.body);
+        console.log(req.session.loginUser.Phone)
+        console.log(req.session.loginUser.c_id)
+
+        const time = moment();
+        const ptime = time.format("YYYY-MM-DD hh:mm:ss")
+        console.log(ptime)
+        const cartTol = req.body[req.body.length - 1].total
+        console.log(cartTol)
+
+        //新增ord_list，可以找到購物編號
+        const insert_item = "insert into ord_list (c_id, Phone,Total_Price, P_Time) values (?,?,?,?);"
+        db.query(insert_item, [req.session.loginUser.c_id, req.session.loginUser.Phone, cartTol, ptime],
+            (error, results, fields) => {
+                console.log(results);
+                console.log("insert ord_list");
+                if (error) { console.log(error.sqlMessage); res.json(error.sqlMessage); }
+                else { res.end() }
+            })
+
+        //新增ord_list，可以找到購物編號下，購買了哪些品項
+        const find_oid = "SELECT * FROM ord_list WHERE c_id=? AND P_Time=?"
+        db.query(find_oid, [req.session.loginUser.c_id, ptime],
+            (error, results, fields) => {
+                console.log(results);
+                console.log("find o_id");
+                console.log(results[0].o_id);
+                let o_id = results[0].o_id
+                let c_id = results[0].c_id
+                let P_time = results[0].P_time
+                let formatT= moment(P_time).format("YYYY-MM-DD hh:mm:ss")
+                console.log("給儲存使用")
+                console.log(c_id)
+                console.log(formatT)
+                console.log(o_id);
+
+                console.log("req.body.length")
+                console.log(req.body.length)
+                for (let i = 0; i < req.body.length-1; i++) {
+                    console.log(`第${i}次`)
+                    let item_ord=req.body[i].item
+                    let price_ord =req.body[i].price
+                    let qty_ord = req.body[i].qty
+
+                //新增購買品項到ord_item
+                const insert_item="insert into ord_items (o_id, c_id,P_name,Qty, Price,P_Time) values (?,?,?,?,?,?);"
+                db.query(insert_item,
+                    [o_id,c_id,item_ord,qty_ord,price_ord,ptime,],
+                    (error,results,fields)=>{
+                    if(error){
+                        console.log(sqlMessage);res.json(sqlMessage)
+                    }
+                    else{  res.end()   }
+                    })
+                }//for end
+
+
+                
 
 
 
-//step1:測試資料庫是否寫入 
+
+
+
+            })//db.query(find_oid) end
+
+        //console.log(shopdetail.total);
+        // console.log(shopdetail.cartarray)
+        //    const a = Object.values(req.body)
+        //    const b = Object.keys(req.body)
+        //    const c = Object.keys(req.body)[1]
+        //    console.log("a");
+        //    console.log(   a  );
+        //    console.log(   b  );
+        //    console.log(   c  );
+
+
+
+
+
+
+    } //else end
+})//app.post end
+
+
+//會員資料寫入
+//step1:測試資料庫是否寫入 =========================================
 app.get("/customer", (request, response) => {
     db.query("select * from cus_list", (error, results, fields) => { //results是資料庫query後丟出來的資料
         // console.log(results);   //測試資料庫寫入資料為何
@@ -343,7 +432,7 @@ app.post("/create-my-account", (req, res) => {
     }
 });
 
-//step 3. 刪除 java delete
+//step 3. 刪除 java delete =============================
 app.get("/customer/delete/:c_id", (req, res) => {
     //  res.render("customer.hbs"); //不需要如此，因為在customer.hbs按了刪除後，直接往customer.hbs 下方的<script>做動作，之後在get路徑"/customer/delete/:c_id"，並且db.query
 
@@ -362,7 +451,7 @@ app.get("/customer/delete2/:c_id", (req, res) => {
     });//db.query end
 }) //app.get end
 
-//step 4. 修改
+//step 4. 修改 edit  ============================================
 app.get("/customer/edit/:c_id", (req, res) => {
 
     db.query("SELECT * FROM cus_list WHERE c_id=?", [req.params.c_id], (error, results, fields) => {
@@ -401,7 +490,8 @@ app.post("/customer/edit/:c_id", (req, res) => {
             else {
                 db.query("SELECT * FROM cus_list WHERE Email=? AND c_id<>?",
                     [req.body.email, req.body.c_id], (error, results, fields) => {
-                        if (results.length) {  console.log("email重複")
+                        if (results.length) {
+                            console.log("email重複")
                             res.json({
                                 success: false,    //先給false，因為一開始還沒新增成功
                                 info: "信箱重複"
@@ -438,7 +528,7 @@ app.post("/customer/edit/:c_id", (req, res) => {
 
 
 
-//shoplist check
+//shoplist check=======================================
 app.get("/shop", (request, response) => {
     response.render("shop.hbs");
 });
@@ -456,7 +546,7 @@ app.get("/test", (request, response) => {
 app.use((req, res) => {
     res.type('text/plain');
     res.status(404);
-    res.send('Page not found.....');
+    res.send('404 Page not found.........');
 });
 
 app.listen(3001, () => {

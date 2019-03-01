@@ -25,13 +25,55 @@
 }
 
 .forcart{
-    background: #182765;  
-    background: -webkit-linear-gradient(to right, #FDBD37, #B92020, #182765);  
-    background: linear-gradient(to right, #FDBD37, #B92020, #182765);
+    background: wheat;  
+    
+}
 
+.div_right_bottom {
+    width:fixed;
+    height:fixed;
+    float:right;
+    position:fixed;
+    right:0px;
+    bottom:0px;
+    z-index:20;
+    padding: 0;
+    margin:0;
+    border:0;
 }
     
 </style>
+
+
+{{!-- class="div_right_bottom" 視窗永遠在右下角(購物車cart placed) --}}
+<div class="div_right_bottom" style=" margin:0px; padding:0px">
+    <section class="container content-section">
+
+        <div class="forcart">
+
+            <h2 class="section-header">CART</h2>
+
+            <div class="cart-row">
+                <span class="cart-item cart-header cart-column">ITEM</span>
+                <span class="cart-price cart-header cart-column">PRICE</span>
+                <span class="cart-quantity cart-header cart-column">QUANTITY</span>
+            </div>
+
+            <div class="cart-items">
+            </div>
+
+            <div class="cart-total">
+                <strong class="cart-total-title">Total</strong>
+                <span class="cart-total-price" name="Total" id="Total">$0</span>
+            </div>
+
+            <button class="btn btn-primary btn-purchase" type="button">PURCHASE</button>
+        </div>
+    </section>
+
+
+
+</div>
 
 
 <section class="container content-section " id="shop4-5i" data-rv-view="2491">
@@ -81,7 +123,7 @@
 
 </section>
 
-<section class="container content-section">
+{{!-- <section class="container content-section">
 
     <div class="forcart">
 
@@ -103,7 +145,7 @@
 
         <button class="btn btn-primary btn-purchase" type="button">PURCHASE</button>
     </div>
-</section>
+</section> --}}
 
 <script>
 
@@ -164,8 +206,8 @@
     //2. add item to cart
     function addItemToCart(title, price, imgsrc) {
 
-    var data =
-    `<div class="cart-item cart-column">
+        var data =
+            `<div class="cart-item cart-column">
     <img class="cart-item-image" src="${imgsrc}" width="100" height="100">
     <span class="cart-item-title">${title}</span>
     <span class="cart-price cart-column">${price}</span>
@@ -173,22 +215,22 @@
     <button class="btn btn-danger" type="button">REMOVE</button>
     </div>`
 
-    var cartItems = document.getElementsByClassName("cart-items")[0]; //選取cart-items內所有元素<div class="cart-items"></div>
-    var cartItemsNames = cartItems.getElementsByClassName("cart-item-title")//選取cart-items下，所有class為cart-item-title的值=>為一陣列[]    
+        var cartItems = document.getElementsByClassName("cart-items")[0]; //選取cart-items內所有元素<div class="cart-items"></div>
+        var cartItemsNames = cartItems.getElementsByClassName("cart-item-title")//選取cart-items下，所有class為cart-item-title的值=>為一陣列[]    
 
         console.log("cartItems:cartItems[0]") //若沒有[0]:HTMLcolletion
         console.log(cartItems) //<div class="cart-items">...</div>
         console.log("======================")
         for (let i = 0; i < cartItemsNames.length; i++) {
             console.log("inside the loop")
-            let item_name = cartItemsNames[i] 
+            let item_name = cartItemsNames[i]
 
             console.log(cartItemsNames) //很多cart-item-title HTMLcollection
             console.log("item_name:cartItemsNames[i]")//cartItemsNames = 
             console.log(item_name)//1:<span>item1</span> 2:<span>item2</span>
             console.log(item_name.innerText)
             console.log("======================")
-            if (title == item_name.innerText ) {
+            if (title == item_name.innerText) {
                 alert("已經在購物車內")
                 return
             }//if end
@@ -217,7 +259,7 @@
 
         var total = 0 //先讓total在外，之後可以近迴圈相加
         for (let i = 0; i < cartItemsQuantities.length; i++) {
-            
+
             let price = parseFloat(cartItemsPrices[i].innerText.slice(1, 5))
             let quantity = parseFloat(cartItemsQuantities[i].value)
             var item = cartItemsNames[i].innerText
@@ -230,14 +272,14 @@
             console.log(total)
 
 
-             //第一個post檢查
+            //第一個post檢查
             //data= {"x":[{"price":price},{"quantity":quantity},{"item":item}]}=>待查清規則
             //test = `price=${price}&quantity=${quantity}&item=${item}`
             //console.log("找不到的data")
             //console.log(test)
 
             //$.post("/qqq", test, function (res, status, xhr) {
-                //console.log("成功")
+            //console.log("成功")
 
             //})
 
@@ -246,7 +288,7 @@
         total = Math.round(total * 100) / 100 //=> 若加此項Math.round，則是四捨五入的算式
         //"$"+total若放在迴圈外面，則數字會同步更新
         document.getElementsByClassName("cart-total-price")[0].innerText = "$" + total;
-        
+
         //取total去後端
         $(".cart-total-price").attr('value', total);
         console.log($(".cart-total-price").attr('value'));
@@ -262,7 +304,7 @@
     //6. Purchase click
     $(".btn-purchase").on("click", function () {
         alert("Thanks for purchase")
-        
+
 
         //取值
         let cartItems = document.getElementsByClassName("cart-items")[0];//取出cart-items
@@ -270,7 +312,7 @@
         let cartItemsQuantities = cartItems.getElementsByClassName("cart-quantity-input");//HTMLcollection
         let cartItemsNames = cartItems.getElementsByClassName("cart-item-title")//HTMLcollection
 
-        cartarray =[];
+        cartarray = [];
         cartObj = {}
         //透過迴圈去取得最終在購物車被點選的項目
         count = 0;
@@ -278,14 +320,14 @@
             let price = parseFloat(cartItemsPrices[i].innerText.slice(1, 5))
             let qty = parseFloat(cartItemsQuantities[i].value)
             var item = cartItemsNames[i].innerText
-            console.log(i+" 取出值:P,Q,N")
+            console.log(i + " 取出值:P,Q,N")
             console.log(price)
             console.log(qty)
             console.log(item)
-            cartObj = {"item":item,"price":price,"qty":qty};
+            cartObj = { "item": item, "price": price, "qty": qty };
             cartarray.push(cartObj);
             console.log("怪")
-            count = count+1
+            count = count + 1
             //test1 =`price=${price}&quantity=${qty}&item=${item}` test
 
 
@@ -297,27 +339,52 @@
         console.log(cartarray)
 
         //也怪//透過$("#Total").val()找不到值，但用$(".cart-total-price").attr('value')可喔
-        cartTotal = $("#Total").val();
-        console.log("cartTotal")
-        console.log(cartTotal)
+        //cartTotal = $("#Total").val();
+        //console.log("cartTotal")
+        //console.log(cartTotal)
         valueCART = $(".cart-total-price").attr('value')//$("#Total").attr('value')相等
         console.log("valueCART");
         console.log(valueCART);
-        
+
 
         cartObj = {"total":valueCART}
         cartarray.push(cartObj);
-        let test = cartarray
-       // }//for end
+        console.log("cartarray after push")
+        console.log(cartarray)
+        //let test = {};
+        //test["total"] = valueCART;
+        //test["objs"] = cartarray;
+    
+       
+        //console.log("========test=======")
+       //console.log(test)
+
+
+        //cartObj["total"] = valueCART //{}物件新增的方法 {}=>透過 obj["屬性name"]：屬性值
+        //cartarray.push(cartObj); ===> 此處ajax回傳值，抓不到[]陣列，但改用物件卻可以{}
+        //let test = cartarray
+        // }//for end
+
 
         //purchase資料去後端
-        $.post('/qqq', test, function (res, status, xhr) {  //("路徑", "x"丟去後端的DATA, 前端勁量要加functoin，有時候不佳會不支援callback(後端傳給我))
-            console.log(status)
-        })
+         $.ajax({
+                url: '/qqq',
+                data: JSON.stringify(cartarray),
+                contentType: 'application/json', //預設就是這個格式
+                processData: true, //此處會影響結果，會將data{}的內容轉換成鍵值字串，可改false試試看
+                type: "post",
+                dataType: 'json',
+                success: function (res, status, jqXHR) {
+                    console.log(status)
+                    console.log(res)
+                }
+            })
 
 
 
-    
+
+
+
 
     })
 

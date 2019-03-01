@@ -46,8 +46,8 @@ router.use((req, res, next) => {
             else if (results.length) {
                 //console.log("results[0]")
                 //console.log(results[0])
-                const member = results[0]
-                res.render("customer_mbr_edit.hbs", { member: member });
+                const member_info = results[0]
+                res.render("customer_mbr_edit.hbs", { m_info: member_info, member:req.session });
             };
 
         })//db.query end
