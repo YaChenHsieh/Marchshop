@@ -9,19 +9,27 @@ const db = mysql.createConnection({
 })
 
 
-db.connect( (error)=>{
-if(error){
-    throw error
-}
-else{
-   console.log("additem DB connected");
-}
+db.connect((error) => {
+    if (error) {
+        throw error
+    }
+    else {
+        console.log("additem DB connected");
+    }
 })//db.connect end
 
-addprod.use( (req,res,next)=>{
-if(req.session.loginUser != "root"){
-res.send("您無權訪問")
-}
+addprod.use((req, res, next) => {
+    if (req.session.loginUser != "root") {
+        res.send("您無權訪問")
+    }
+    else {
+        next()
+    }
+
+    addprod.get("/",(req,res)=>{
+
+        
+    })
 
 
 })

@@ -196,6 +196,7 @@ app.post('/try-upload', upload.single('avatar'), (request, response) => {
                 .pipe(
                     fs.createWriteStream('./public/img/' + request.file.originalname)
                 );
+            
         }
     }
     response.render('try-upload', {
