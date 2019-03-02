@@ -368,8 +368,8 @@
 
         //purchase資料去後端
          $.ajax({
-                url: '/qqq',
-                data: JSON.stringify(cartarray),
+                url: '/shop', //data:是確保他是能夠傳遞的格式，至於後端若要「解析」，則要透過stringify & parser來做到
+                data: JSON.stringify(cartarray), //此處陣列透過JSON字串化，能讓電腦把陣列轉為可以傳過睇過去的資料(若沒轉，資料無法傳遞)，至於到後端是否後端能解析資料，要再透過parser或stringfy再把資料解析成美麗的樣子(此例子到後端不在parse一次，是因為我們有require,bodyParser所以資料過去時，他會自動幫我們解析資料)
                 contentType: 'application/json', //預設就是這個格式
                 processData: true, //此處會影響結果，會將data{}的內容轉換成鍵值字串，可改false試試看
                 type: "post",
@@ -377,6 +377,19 @@
                 success: function (res, status, jqXHR) {
                     console.log(status)
                     console.log(res)
+                    console.log(res.typeobj.type)
+                    console.log(res.item_list[0].o_id)
+                    if(res.loginTF == false ){
+                        location.href = "/login"
+                    }
+                    if(res.typeobj.type == "success"){
+                        console.log("OKOK")
+                        console.log(res.item_list)
+                        window.alert(`訂單成立\n訂單編號為${res.item_list[0].o_id}\n感謝您的購買!`)
+                        location.href= "/shop"
+                    }
+                    
+
                 }
             })
 

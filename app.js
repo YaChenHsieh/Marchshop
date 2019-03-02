@@ -64,8 +64,7 @@ app.use(session({
 }));
 
 
-//宣告使用 app.use(member.js)
-app.use("/member", require("./my_routers/member.js"));
+
 
 //loginUser 的  middleware 建立==================================
 app.use((request, response, next) => {
@@ -114,6 +113,10 @@ app.post("/login", (request, response) => {
             console.log("data===========")
             console.log(data)
             response.redirect("/member")
+            // setTimeout(()=>{
+            //     response.redirect("/member/")
+            // },2000)
+            
 
         }
         //console.log("request.session.loginUser")
@@ -134,8 +137,11 @@ app.get('/logout', (request, response) => {
     response.redirect('/login');
 
 });
-
-//==========================================
+//宣告使用 app.use(member.js)=================================
+app.use("/member", require("./my_routers/member.js"));
+//宣告使用 app.use(addprod.js)=================================
+app.use("/root", require("./my_routers/root.js"));
+//===========================================================
 
 app.get('/', (req, res) => {
     res.render('homepage.hbs', { name: ' Welcome to FoodCart' });
@@ -172,7 +178,16 @@ app.get('/abc', (req, res) => {
 
 // url
 app.get('/try-querystring', (request, response) => {
-    const urlParts = url.parse(request.url, true);
+    console.log("request.url=====================")
+    console.log(request.url)
+    const urlParts = url.parse(request.url, true); //request.url剛過來時，是一串很醜的字串
+    console.log("urlParts===================") //透過url.parse轉成一個物件
+    console.log(urlParts)
+    console.log("urlParts.query========================")//urlParts裡面有一個query，裡面藏有前端包過來的資料
+    console.log(urlParts.query)
+    myQUERY = JSON.parse(  JSON.stringify(urlParts.query) )//先把urlParts.query先stringify字串化，再透過JSON.parse轉換成美麗的物件
+    console.log("myQUERY===================")
+    console.log(myQUERY)
     response.render('try-querystring.hbs', { urlParts: urlParts });
 })
 
@@ -196,7 +211,7 @@ app.post('/try-upload', upload.single('avatar'), (request, response) => {
                 .pipe(
                     fs.createWriteStream('./public/img/' + request.file.originalname)
                 );
-            
+
         }
     }
     response.render('try-upload', {
@@ -240,7 +255,10 @@ app.get("/try-moment", (request, response) => {
     response.end();//記得寫end,否則他會一直不結束
 });
 //root add items====
-app.use("/root", require("./my_routers/itemadd.js"))
+app.use("/root", require("./my_routers/root.js"),function(req,res){
+console.log(res);
+res.end();
+})
 
 //=============================================20190123
 //Create Shopcart
@@ -259,15 +277,18 @@ app.get("/shop", (req, res) => {
 
 })//app.get & (req,res) end
 
-app.post('/qqq', (req, res) => { //前端的請求，丟在req=我可以選擇是否去用 ; res回應給前端
+app.post('/shop', (req, res) => { //前端的請求，丟在req=我可以選擇是否去用 ; res回應給前端
     console.log("LOGIN or NOT=========")
     console.log(req.session.loginUser)
     console.log("LOGIN or NOT")
+    var typeobj = {"type":""}
     if (!req.session.loginUser) {
         console.log("COMING NULLLLLLL+++++++++++++++++++++++++++++")
-        res.redirect("/login");
+        res.json({loginTF:false});
+        
     }
     else {
+        typeobj.type = "success"
         console.log("後端收到得直,total,item, price, Q")
         //const shopdetail = JSON.parse(JSON.stringify(req.body));
         console.log("req.body");
@@ -282,26 +303,35 @@ app.post('/qqq', (req, res) => { //前端的請求，丟在req=我可以選擇�
         console.log(cartTol)
 
         //新增ord_list，可以找到購物編號
-        const insert_item = "insert into ord_list (c_id, Phone,Total_Price, P_Time) values (?,?,?,?);"
-        db.query(insert_item, [req.session.loginUser.c_id, req.session.loginUser.Phone, cartTol, ptime],
+        const insert_oid = "insert into ord_list (c_id, Phone,Total_Price, P_Time) values (?,?,?,?);"
+        db.query(insert_oid, [req.session.loginUser.c_id, req.session.loginUser.Phone, cartTol, ptime],
             (error, results, fields) => {
                 console.log(results);
                 console.log("insert ord_list");
-                if (error) { console.log(error.sqlMessage); res.json(error.sqlMessage); }
-                else { res.end() }
-            })
+                if (error) {
+                    console.log("第1個有問題！");
+                    console.log(error.sqlMessage);
+                    typeobj.type = "false"
+                    return
+                }
+
+            }) //db.query(insert_oid)
 
         //新增ord_list，可以找到購物編號下，購買了哪些品項
         const find_oid = "SELECT * FROM ord_list WHERE c_id=? AND P_Time=?"
         db.query(find_oid, [req.session.loginUser.c_id, ptime],
             (error, results, fields) => {
+                if (error) { 
+                    typeobj.type = "false"
+                    return console.log("選取o_id有問題！") 
+                };
                 console.log(results);
                 console.log("find o_id");
                 console.log(results[0].o_id);
                 let o_id = results[0].o_id
                 let c_id = results[0].c_id
                 let P_time = results[0].P_time
-                let formatT= moment(P_time).format("YYYY-MM-DD hh:mm:ss")
+                let formatT = moment(P_time).format("YYYY-MM-DD hh:mm:ss")
                 console.log("給儲存使用")
                 console.log(c_id)
                 console.log(formatT)
@@ -309,31 +339,40 @@ app.post('/qqq', (req, res) => { //前端的請求，丟在req=我可以選擇�
 
                 console.log("req.body.length")
                 console.log(req.body.length)
-                for (let i = 0; i < req.body.length-1; i++) {
+                for (let i = 0; i < req.body.length - 1; i++) {
                     console.log(`第${i}次`)
-                    let item_ord=req.body[i].item
-                    let price_ord =req.body[i].price
+                    let item_ord = req.body[i].item
+                    let price_ord = req.body[i].price
                     let qty_ord = req.body[i].qty
 
-                //新增購買品項到ord_item
-                const insert_item="insert into ord_items (o_id, c_id,P_name,Qty, Price,P_Time) values (?,?,?,?,?,?);"
-                db.query(insert_item,
-                    [o_id,c_id,item_ord,qty_ord,price_ord,ptime,],
-                    (error,results,fields)=>{
-                    if(error){
-                        console.log(sqlMessage);res.json(sqlMessage)
-                    }
-                    else{  res.end()   }
-                    })
+                    //新增購買品項到ord_item
+                    const insert_items = "insert into ord_items (o_id, c_id,P_name,Qty, Price,P_Time) values (?,?,?,?,?,?);"
+                    db.query(insert_items,
+                        [o_id, c_id, item_ord, qty_ord, price_ord, ptime,],
+                        (error, results, fields) => {
+                            if (error) {
+                                typeobj.type = "false"
+                                console.log("12313123")
+                                return console.log(sqlMessage);
+                            }
+                        })// db.query(insert_items) end
+
                 }//for end
 
 
-                
+                db.query("SELECT * FROM ord_items WHERE o_id=?",
+                [o_id],
+                (error,results,fields)=>{
+                if(error){
+                    typeobj.type = "false"
+                    return console.log("透過o_id找購物請單有問題！") 
+                }
+                else{
+                    res.json(  {typeobj:typeobj, item_list:results}  )
 
+                }
 
-
-
-
+                })//db.query--選出ord_items清單內o_id的值
 
             })//db.query(find_oid) end
 
@@ -347,12 +386,9 @@ app.post('/qqq', (req, res) => { //前端的請求，丟在req=我可以選擇�
         //    console.log(   b  );
         //    console.log(   c  );
 
-
-
-
-
-
+    
     } //else end
+
 })//app.post end
 
 
@@ -427,7 +463,7 @@ app.post("/create-my-account", (req, res) => {
                 res.send(error.sqlMessage); //如果err，顯示err的訊息
             } else if (results.affectedRows) { //如果有res.affected表示有一筆新增資料 => 新增成功 => redirect(/網址)
                 // console.log(results);
-                res.redirect("/customer");
+                res.redirect( "/member")
             }
         });
     }

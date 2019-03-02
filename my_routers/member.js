@@ -136,10 +136,11 @@ router.use((req, res, next) => {
         if (request.session.loginUser) {
             console.log("request.session.loginUser inside if")
             console.log(request.session.loginUser)
+            console.log(request.session.loginUser.c_id)
             db.query("SELECT * from ord_items where c_id=?", [request.session.loginUser.c_id], (error, results, fields) => {
                 if (error) {
                     throw error;
-                } else if (results.length) {
+                } else{
                     console.log("results from db shoplist")
                     console.log(results)
 
@@ -149,7 +150,7 @@ router.use((req, res, next) => {
             })//db.query end
 
         } else {
-            response.render("login");
+            response.redirect("/login");
         }
 
     });
