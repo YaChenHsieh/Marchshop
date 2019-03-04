@@ -1,3 +1,8 @@
+
+<div>
+    
+<a href="/root/additem" class="btn btn-warning" style="padding:10px; margin:5px">Add Item</a>    
+</div>
 <table class="table table-borderless table-dark">
   <thead>
     <tr>
@@ -8,16 +13,17 @@
     </tr>
   </thead>
   <tbody>
-     {{#each purchase}}
+    {{#each item}}
     <tr>
-      <th scope="row" >{{o_id}}</th>
+      <th scope="row" >{{p_id}}</th>
       <td class="format time">{{P_name}}</td>
-      <td>{{Qty}}</td>
-      <td>{{P_Time}}</td>
+      <td>{{Price}}</td>
+      <td>{{Pic}}</td>
     </tr>
    {{/each}}
     </tbody>
 </table>
+
 
 <script>
 

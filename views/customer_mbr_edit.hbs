@@ -22,8 +22,7 @@
   </div>
 
   <div class="form-group">
-    <label for="phone">Phone : </label>
-    <input type="text" class="form-control" id="phone" value="{{Phone}}" name="phone">
+    <label for="phone">Phone :  </label><span>{{Phone}}</span>
   </div>
 
   <button type="submit" class="btn btn-primary">Edit</button>
@@ -33,7 +32,7 @@
 
 <script>
   const info = $("#info");
-  const phonenum = /^09[0-9]{8}$/;
+
 
   function checkForm() {
 
@@ -59,25 +58,6 @@
       info.addClass("alert-danger");
       info.show(); //show出
       info.html("請填密碼");
-      return false;
-    }
-    if (!$("#phone").val()) {
-      info.removeClass("alert-success");
-      info.addClass("alert-danger");
-      info.show(); //show出
-      info.html("請填電話");
-      return false;
-    }
-
-    const aa = phonenum.test($("#phone").val());
-    console.log(aa);
-    console.log("aa");
-
-    if (!phonenum.test($("#phone").val())) {
-      info.removeClass("alert-success");
-      info.addClass("alert-danger");
-      info.show(); //show出
-      info.html("請填入正確電話格式");
       return false;
     }
      

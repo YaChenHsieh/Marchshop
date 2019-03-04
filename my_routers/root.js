@@ -5,7 +5,8 @@ const db = mysql.createConnection({
     host: "localhost",
     user: "root",
     password: "root",
-    database: "foodcart"
+    database: "foodcart",
+    dateStrings:true
 })
 
 
@@ -38,13 +39,17 @@ addprod.use((req, res, next) => {
         console.log(req.session.loginUser.Name)
         next()
     }
-    console.log("又進來")
+    console.log("進入 ROOT!")
     addprod.get("/", (req, res) => {
         console.log("in root/")
         res.redirect("/root")
     })
+})//addprod.use(,,,)end
 
 
+
+
+    //ROOT會員資料修改刪除
     //step 1. 讀取資料 =============================
     addprod.get("/customer", (request, response) => {
         db.query("select * from cus_list", (error, results, fields) => { //results是資料庫query後丟出來的資料
@@ -57,7 +62,7 @@ addprod.use((req, res, next) => {
     });
 
 
-    //step 3. 刪除 java delete =============================
+    //step 2. 刪除 java delete =============================
     addprod.get("/customer/delete/:c_id", (req, res) => {
         //  res.render("customer.hbs"); //不需要如此，因為在customer.hbs按了刪除後，直接往customer.hbs 下方的<script>做動作，之後在get路徑"/customer/delete/:c_id"，並且db.query
 
@@ -150,11 +155,39 @@ addprod.use((req, res, next) => {
 
             });//db.query for phone
 
-    });//app.post
+    });//app.post end 前端送資料
+    
+//ROOT列出產品項目
+    addprod.get("/root_prolist", (request, response) => {
+        db.query("SELECT * FROM pro_list;",(error, results, fields)=>{
+            if(error){
+                console.log(sqlMessage)}
+            else {
+                console.log("近來SELECT * FROM pro_list========================")
+                console.log("results============================================")
+                console.log(results[0])// 值是[{}]，陣列包物件
+                console.log(results[0].p_id)
+                response.render("root_prolist.hbs", { item:results, member:request.session })
+            } //回傳item:result不用加[0]==>因為到前端hbs{#each}他是要讀取陣列！
+        })
+        
+    });
+
+//
+
+
+
+////ROOT列出產品項目
+addprod.get("/additem", (req, res)=>{
+res.render("root_additems.hbs",{member:req.session})
+} );//addprod.get("/additem") end
+
+addprod.post("/additem", (req,res)=>{
 
 
 
 
-})//addprod end 
+})
+
 
 module.exports = addprod

@@ -1,0 +1,138 @@
+<style>
+    .form-group
+{
+  margin:10px;
+}
+.form-div
+{
+  max-width: 50%;
+  border: 3px solid gray;
+}
+
+.inform{
+margin:10px;
+border: :solid black 2px;
+
+}
+
+.yumpic
+{
+  margin:0;
+  padding:0;
+  text-align: center;
+}
+
+
+.styled {
+    border: 0;
+    line-height: 2.5;
+    padding: 0 20px;
+    font-size: 1rem;
+    text-align: center;
+    color: #fff;
+    text-shadow: 1px 1px 1px #000;
+    border-radius: 10px;
+    background-color: rgba(220, 0, 0, 1);
+    background-image: linear-gradient(to top left,
+                                      rgba(0, 0, 0, .2),
+                                      rgba(0, 0, 0, .2) 30%,
+                                      rgba(0, 0, 0, 0));
+    box-shadow: inset 2px 2px 3px rgba(255, 255, 255, .6),
+                inset -2px -2px 3px rgba(0, 0, 0, .6);
+}
+
+.styled:hover {
+    background-color: rgba(255, 0, 0, 1);
+}
+
+.styled:active {
+    box-shadow: inset -2px -2px 3px rgba(255, 255, 255, .6),
+                inset 2px 2px 3px rgba(0, 0, 0, .6);
+}
+
+
+</style>
+
+<div id="info" class="alert" style="display:none"></div>
+
+
+<div class="form-div container">
+    <form class="" id="creatform" name="item-add" method="post">
+
+        <div class="inform">
+
+            <div class="yumpic" style="border:solid black 3px; margin:10px width:300px height:300px " text-align="center">
+                <img src="/img/{{name}}.jpg" alt="" width="300" height="300">
+            </div>
+
+
+
+            <div class="form-group">
+                <label for="P_name">Product Name :</label><span id="check_pname"></span>
+                <input type="text" class="form-control" id="P_name" value="" name="P_name">
+            </div>
+
+
+            <div class="form-group">
+                <label for="price">Price : </label> <span id="check_price"></span>
+                <input type="text" class="form-control" id="price" value="" name="price">
+            </div>
+
+            <div class="form-group">
+                <input id="111" type="button" class="styled" value="Submit">
+            </div>
+
+        </div>
+    </form>
+</div>
+
+<script>
+    //jquery檢查項目是否填寫
+    $("#P_name").blur(function () {
+        if (!$("#P_name").val()) {
+            $("#check_pname").html("<i class='fas fa-times-circle'>請填寫產品名稱!</i>").css("color", "red");
+        }
+        if ($("#P_name").val()) {
+            $("#check_pname").html("")
+        }
+    })
+
+    $("#price").blur(function () {
+        if (!$("#price").val()) {
+            $("#check_price").html("<i class='fas fa-times-circle'>請填寫價格!</i>").css("color", "red");
+        }
+        if ($("#price").val()) {
+            $("#check_price").html("")
+        }
+    })
+
+    //post看看是否有填寫，以及是否產品名稱重複
+    function additem() {
+
+        if (!$("#P_name").val()) {
+            $("#check_pname").html("<i class='fas fa-times-circle'>請填寫產品名稱!</i>").css("color", "red");
+        }
+        if ($("#P_name").val()) {
+            $("#check_pname").html("")
+        }
+        if (!$("#price").val()) {
+            $("#check_price").html("<i class='fas fa-times-circle'>請填寫價格!</i>").css("color", "red");
+        }
+        if ($("#price").val()) {
+            $("#check_price").html("")
+        }
+
+    $.ajax({
+        url:"/root//additem"
+
+
+
+
+    })
+
+
+    }//function additem() end
+
+
+
+</script>

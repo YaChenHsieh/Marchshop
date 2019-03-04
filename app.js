@@ -80,6 +80,7 @@ app.get("/login", (request, response) => {
     response.render("login.hbs");
 });
 
+
 app.post("/login", (request, response) => {
     console.log("測試登入的密碼與帳號request.body")
     console.log(request.body.phone)
@@ -117,7 +118,6 @@ app.post("/login", (request, response) => {
             //     response.redirect("/member/")
             // },2000)
             
-
         }
         //console.log("request.session.loginUser")
         //console.log(request.session.loginUser)測試如果在else儲存req.sesstion是否痊癒可用
