@@ -118,6 +118,7 @@ app.post("/login", (request, response) => {
             //     response.redirect("/member/")
             // },2000)
             
+
         }
         //console.log("request.session.loginUser")
         //console.log(request.session.loginUser)測試如果在else儲存req.sesstion是否痊癒可用
