@@ -1,6 +1,8 @@
 const router = require("express").Router();
 const mysql = require("mysql");
 const moment = require("moment");
+// const config  = require("config")
+// const request = require("request");
 
 const db = mysql.createConnection({
     host: "localhost",
@@ -163,6 +165,14 @@ router.get("/shoplist", (request, response) => {
     }
 
 });
+
+// //Line query
+// router.post("/webhook", function(req,res){
+// console.log("In or Not");
+// let data = req.body;
+// //let askprod = data.queryResult.parameters.
+
+// })
 
 
 

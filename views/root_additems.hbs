@@ -57,7 +57,7 @@ border: :solid black 2px;
 
 
 <div class="form-div container">
-    <form class="" id="creatform" name="item-add" method="post">
+    <form class="" id="creatform" name="item_add" method="post">
 
         <div class="inform">
 
@@ -79,7 +79,7 @@ border: :solid black 2px;
             </div>
 
             <div class="form-group">
-                <input id="111" type="button" class="styled" value="Submit">
+                <input id="111" type="button" class="styled" value="Submit" onclick="additem();">
             </div>
 
         </div>
@@ -108,6 +108,7 @@ border: :solid black 2px;
 
     //post看看是否有填寫，以及是否產品名稱重複
     function additem() {
+       alert("additem")
 
         if (!$("#P_name").val()) {
             $("#check_pname").html("<i class='fas fa-times-circle'>請填寫產品名稱!</i>").css("color", "red");
@@ -122,13 +123,18 @@ border: :solid black 2px;
             $("#check_price").html("")
         }
 
-    $.ajax({
-        url:"/root//additem"
+        $.ajax({
+            url: "/root/additem",
+            data: $(item_add).serialize(),
+            type: "post",
+            dataType: "json",
+            success: function (res, status, jqXHR) {
+                console.log(status)
+                console.log(res)
+                console.log(res.info)
+            }//success end
 
-
-
-
-    })
+        })//ajax end
 
 
     }//function additem() end

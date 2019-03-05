@@ -180,12 +180,31 @@ addprod.use((req, res, next) => {
 ////ROOT列出產品項目
 addprod.get("/additem", (req, res)=>{
 res.render("root_additems.hbs",{member:req.session})
-} );//addprod.get("/additem") end
+});//addprod.get("/additem") end
 
 addprod.post("/additem", (req,res)=>{
+    console.log("inside additem back")
+    console.log(req.body);
+    let addprod = JSON.parse(JSON.stringify(req.body))
+    console.log("看看Ｘ================")
+    console.log(addprod)
+    console.log(addprod.P_name)
+    console.log(addprod.price)
+    db.query("SELECT * FROM pro_list WHERE P_name=?",
+    [addprod.P_name],
+    (error,results,fields)=>{
+        console.log("results 去找PRO_LIST")
+        console.log(results)
+        if(error){ console.log(sqlMessage);}
+        if(results.length){   
+         res.json(  { msg:"品名重複" });
+        }//if(results.length) end
+        else{
+            
+        }
 
 
-
+    })//db.query
 
 })
 
