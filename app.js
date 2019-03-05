@@ -9,7 +9,22 @@ const url = require('url');
 const bodyParser = require('body-parser');
 // bodyParser 有兩個功能，此處直接app.use變全癒使用// 
 app.use(bodyParser.urlencoded({ extended: false })); //false:use 內建querystringlib ; if true:use QS lib//
-app.use(bodyParser.json());
+
+app.use(maybe(bodyParser.json()));
+
+function maybe(fn) { //讓parser可以判斷，若line則不要自動parse
+    return function (req, res, next) {
+        if (req.path == "/linebot/") {
+            next();
+        }
+        else {
+            fn(req, res, next);
+        }
+
+    }
+
+
+}
 
 
 //宣告 multer upload使用//
@@ -117,7 +132,7 @@ app.post("/login", (request, response) => {
             // setTimeout(()=>{
             //     response.redirect("/member/")
             // },2000)
-            
+
 
         }
         //console.log("request.session.loginUser")
@@ -186,7 +201,7 @@ app.get('/try-querystring', (request, response) => {
     console.log(urlParts)
     console.log("urlParts.query========================")//urlParts裡面有一個query，裡面藏有前端包過來的資料
     console.log(urlParts.query)
-    myQUERY = JSON.parse(  JSON.stringify(urlParts.query) )//先把urlParts.query先stringify字串化，再透過JSON.parse轉換成美麗的物件
+    myQUERY = JSON.parse(JSON.stringify(urlParts.query))//先把urlParts.query先stringify字串化，再透過JSON.parse轉換成美麗的物件
     console.log("myQUERY===================")
     console.log(myQUERY)
     response.render('try-querystring.hbs', { urlParts: urlParts });
@@ -256,9 +271,9 @@ app.get("/try-moment", (request, response) => {
     response.end();//記得寫end,否則他會一直不結束
 });
 //root add items====
-app.use("/root", require("./my_routers/root.js"),function(req,res){
-console.log(res);
-res.end();
+app.use("/root", require("./my_routers/root.js"), function (req, res) {
+    console.log(res);
+    res.end();
 })
 
 //=============================================20190123
@@ -282,11 +297,11 @@ app.post('/shop', (req, res) => { //前端的請求，丟在req=我可以選擇�
     console.log("LOGIN or NOT=========")
     console.log(req.session.loginUser)
     console.log("LOGIN or NOT")
-    var typeobj = {"type":""}
+    var typeobj = { "type": "" }
     if (!req.session.loginUser) {
         console.log("COMING NULLLLLLL+++++++++++++++++++++++++++++")
-        res.json({loginTF:false});
-        
+        res.json({ loginTF: false });
+
     }
     else {
         typeobj.type = "success"
@@ -322,9 +337,9 @@ app.post('/shop', (req, res) => { //前端的請求，丟在req=我可以選擇�
         const find_oid = "SELECT * FROM ord_list WHERE c_id=? AND P_Time=?"
         db.query(find_oid, [req.session.loginUser.c_id, ptime],
             (error, results, fields) => {
-                if (error) { 
+                if (error) {
                     typeobj.type = "false"
-                    return console.log("選取o_id有問題！") 
+                    return console.log("選取o_id有問題！")
                 };
                 console.log(results);
                 console.log("find o_id");
@@ -362,18 +377,18 @@ app.post('/shop', (req, res) => { //前端的請求，丟在req=我可以選擇�
 
 
                 db.query("SELECT * FROM ord_items WHERE o_id=?",
-                [o_id],
-                (error,results,fields)=>{
-                if(error){
-                    typeobj.type = "false"
-                    return console.log("透過o_id找購物請單有問題！") 
-                }
-                else{
-                    res.json(  {typeobj:typeobj, item_list:results}  )
+                    [o_id],
+                    (error, results, fields) => {
+                        if (error) {
+                            typeobj.type = "false"
+                            return console.log("透過o_id找購物請單有問題！")
+                        }
+                        else {
+                            res.json({ typeobj: typeobj, item_list: results })
 
-                }
+                        }
 
-                })//db.query--選出ord_items清單內o_id的值
+                    })//db.query--選出ord_items清單內o_id的值
 
             })//db.query(find_oid) end
 
@@ -387,7 +402,7 @@ app.post('/shop', (req, res) => { //前端的請求，丟在req=我可以選擇�
         //    console.log(   b  );
         //    console.log(   c  );
 
-    
+
     } //else end
 
 })//app.post end
@@ -464,7 +479,7 @@ app.post("/create-my-account", (req, res) => {
                 res.send(error.sqlMessage); //如果err，顯示err的訊息
             } else if (results.affectedRows) { //如果有res.affected表示有一筆新增資料 => 新增成功 => redirect(/網址)
                 // console.log(results);
-                res.redirect( "/member")
+                res.redirect("/member")
             }
         });
     }
@@ -487,6 +502,7 @@ app.get("/test", (request, response) => {
 });
 
 
+app.use("/linebot", require("./my_routers/line.js"))
 
 // Last Result 404 Error//==========================
 app.use((req, res) => {
