@@ -51,6 +51,7 @@ lineapp.post("/",line.middleware(config), function(req,res){
             ]
         }
       }
+      
     
 
     return client.replyMessage(data[0].replyToken, test01)
