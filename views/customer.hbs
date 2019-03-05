@@ -1,16 +1,14 @@
 <style>
-.ajax-delete
-{ color:red;
-cursor:pointer;
-}
-
-
+  .ajax-delete {
+    color: red;
+    cursor: pointer;
+  }
 </style>
 
 
 <table class="table table-dark text-center">
   <thead>
-    <tr>  
+    <tr>
       <th scope="col"><i class="fas fa-trash-alt"></i></th>
       <th scope="col">ajax delete</th>
       <th scope="col">#</th>
@@ -25,69 +23,77 @@ cursor:pointer;
     {{#each customer}}
     <tr>
       <td><a href="javascript: remove_item({{c_id}})"><i class="fas fa-trash-alt"></i></a></td>
-      <td><i class="far fa-trash-alt  ajax-delete"      data-cid="{{c_id}}"   ></i></td>
+      <td><i class="far fa-trash-alt  ajax-delete" data-cid="{{c_id}}"></i></td>
       <td>{{c_id}}</td>
       <td>{{Name}}</td>
       <td>{{Email}}</td>
       <td>{{Password}}</td>
       <td>{{Phone}}</td>
-      <td><a href="customer/edit/{{c_id}}"><i class="far fa-edit"></i></a></td>
+      <td><a href="/root/customer/edit/{{c_id}}"><i class="far fa-edit"></i></a></td>
     </tr>
     {{/each}}
-    
+
   </tbody>
 </table>
 
 
 <script>
-//1. 刪除
-//java delete===========================================
-  function remove_item(c_id){
-   if(confirm("你確定要移除欄位" + c_id + "的資料嗎?")==true)
-   { location.href= "/customer/delete/" + c_id };
+  //1. 刪除
+  //java delete===========================================
+  function remove_item(c_id) {
+    if (confirm("你確定要移除欄位" + c_id + "的資料嗎?") == true){
+      location.href = "/root/customer/delete/" + c_id 
+      };
   }
 
-//ajax delete===================================================
+  //ajax delete===================================================
 
-$(".ajax-delete").click(function(){
+  $(".ajax-delete").click(function () {
 
-  const me=$(this); //const me先指定點到的這個為this 因為之後前後端的搞混
-  const cid= me.attr("data-cid"); //cid=me.attr賦予cid值，讓電腦可以找到我們點到的那行 因為js無法判別hbs格式的{},so要透過給定的cid來輔助抓
-  //有了cid後，再去上方的 i class裡面add
-  if(confirm("確定要移除"+ cid + "這筆資料?")==true)
-  { $.get("/customer/delete2/" + cid  ,function(res,status,xhr){console.log(res); me.closest("tr").remove();}, 'json'  ); } //此處res是後端帶回來的
+    const me = $(this); //const me先指定點到的這個為this 因為之後前後端的搞混
+    const cid = me.attr("data-cid"); //cid=me.attr賦予cid值，讓電腦可以找到我們點到的那行 因為js無法判別hbs格式的{},so要透過給定的cid來輔助抓
+    //有了cid後，再去上方的 i class裡面add
+    if (confirm("確定要移除" + cid + "這筆資料?") == true) {
+      $.get("/root/customer/delete2/" + cid,
+        function (res, status, xhr) {
+          console.log(res);
+          me.closest("tr").remove();
+        }, 'json');
+    } //此處res是後端帶回來的
 
-}//.click.function end
-);//click.end
+  }//.click.function end
+  );//click.end
 
 </script>
 
 
 
-{{!-- <script>
-//normal delete
-function remove_item(c_id){
-if(confirm("確定要移除編號" + c_id + "的欄位嗎?")   ){
-  location.href = "/customer/remove/" + c_id ; }//if endline
-}//function endline
+{{!--
+<script>
+  //normal delete
+  function remove_item(c_id) {
+    if (confirm("確定要移除編號" + c_id + "的欄位嗎?")) {
+      location.href = "/customer/remove/" + c_id;
+    }//if endline
+  }//function endline
 
 
-//ajax delete
-$(".ajax-delete").click(function(){
+  //ajax delete
+  $(".ajax-delete").click(function () {
 
-var me=$(this) //指定 me 為 $(this) =>前端的<i>
-var c_id2=$(this).attr('data-sid'); 
+    var me = $(this) //指定 me 為 $(this) =>前端的<i>
+    var c_id2 = $(this).attr('data-sid');
 
-if(confirm("確定要移除編號" + c_id2 + "的欄位嗎?"))
-{
-$.get(  '/customer/remove2/' + c_id2  ,  function(data) //==>此時來到後端，若前方沒定義me = $(this), 這裡的$(this)會是一組物件(後端的)
-{ console.log(data);
- me.closest("tr").remove();
- } ,"json");
+    if (confirm("確定要移除編號" + c_id2 + "的欄位嗎?")) {
+      $.get('/customer/remove2/' + c_id2, function (data) //==>此時來到後端，若前方沒定義me = $(this), 這裡的$(this)會是一組物件(後端的)
+      {
+        console.log(data);
+        me.closest("tr").remove();
+      }, "json");
 
-}//if endline
+    }//if endline
 
-});//function endline
+  });//function endline
 
 
 

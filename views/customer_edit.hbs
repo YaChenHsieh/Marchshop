@@ -83,7 +83,7 @@
 
 
     //{data}上方form的資料，我要透過serialize打包之後，丟到後端讓他們處理。先找到form的定位，就可以取得整個form的值
-    $.post("/customer/edit/" + $("#c_id").val(), $("#form1").serialize(),
+    $.post("/root/customer/edit/" + $("#c_id").val(), $("#form1").serialize(),
       function (res, status, xhr) {
         console.log("check.res")
         console.log(res);

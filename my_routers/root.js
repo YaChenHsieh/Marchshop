@@ -35,8 +35,8 @@ addprod.use((req, res, next) => {
     }
     else {
         console.log("req.session.loginUser.Email===================")
-        console.log(req.session.loginUser.Email)
-        console.log(req.session.loginUser.Name)
+        // console.log(req.session.loginUser.Email)
+        // console.log(req.session.loginUser.Name)
         next()
     }
     console.log("進入 ROOT!")
@@ -86,11 +86,11 @@ addprod.use((req, res, next) => {
     addprod.get("/customer/edit/:c_id", (req, res) => {
 
         db.query("SELECT * FROM cus_list WHERE c_id=?", [req.params.c_id], (error, results, fields) => {
-            //   console.log(results); //回傳陣列
-            //   console.log(results[0]) //回傳物件
+              console.log(results); //回傳陣列
+              console.log(results[0]) //回傳物件
 
             if (!results.length) { res.status(404); res.send("No Data!"); }
-            else { res.render("customer_edit.hbs", { item: results[0] }); };
+            else { res.render("customer_edit.hbs", { item: results[0],member: req.session }); };
         });//dbquery end
     })//app.get
 
@@ -103,7 +103,8 @@ addprod.use((req, res, next) => {
             affectedRows: 0,    //因為尚未新增，所以為零
             info: "每個欄位都必需要填"
         };
-        // console.log(res)
+        console.log("post 後面的res")
+        console.log(res)
 
         //此時req.body.name的name是跟後端的name一致，並不是跟db裡的資料
         if (!req.body.name || !req.body.email || !req.body.password || !req.body.phone) { res.json(my_result); return; }
@@ -200,7 +201,7 @@ addprod.post("/additem", (req,res)=>{
          res.json(  { msg:"品名重複" });
         }//if(results.length) end
         else{
-            
+
         }
 
 
