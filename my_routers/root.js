@@ -74,10 +74,9 @@ addprod.get("/customer/delete/:c_id", (req, res) => {
 
 //step 3. 刪除 ajax delete
 addprod.get("/customer/delete2/:c_id", (req, res) => {
-
+console.log("COMING to DEELETE")
     db.query("DELETE FROM cus_list WHERE c_id=?", [req.params.c_id], (error, results, fields) => {
         //    console.log(results)
-        res.json("results");
         res.json(results);
     });//db.query end
 }) //app.get end
@@ -86,8 +85,8 @@ addprod.get("/customer/delete2/:c_id", (req, res) => {
 addprod.get("/customer/edit/:c_id", (req, res) => {
 
     db.query("SELECT * FROM cus_list WHERE c_id=?", [req.params.c_id], (error, results, fields) => {
-        console.log(results); //回傳陣列
-        console.log(results[0]) //回傳物件
+        // console.log(results); //回傳陣列
+        // console.log(results[0]) //回傳物件
 
         if (!results.length) {
             res.status(404);
