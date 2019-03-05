@@ -67,7 +67,7 @@ addprod.get("/customer/delete/:c_id", (req, res) => {
     //  res.render("customer.hbs"); //不需要如此，因為在customer.hbs按了刪除後，直接往customer.hbs 下方的<script>做動作，之後在get路徑"/customer/delete/:c_id"，並且db.query
 
     db.query("DELETE FROM cus_list WHERE c_id =?", [req.params.c_id], (error, results, fields) => {
-        res.redirect("/customer");
+        res.redirect("/root/customer");
 
     });
 });
