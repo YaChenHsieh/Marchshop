@@ -82,44 +82,8 @@ lineapp.post("/", line.middleware(config), function (req, res) {
                     "template": {
                         "type": "carousel",
                         "columns": [
-                            {
-                                "thumbnailImageUrl": "https://example.com/bot/images/item1.jpg",
-                                "imageBackgroundColor": "#FFFFFF",
-                                "title": "this is menu",
-                                "text": "description",
-                                "defaultAction": {
-                                    "type": "uri",
-                                    "label": "View detail",
-                                    "uri": "http://example.com/page/123"
-                                },
-                                "actions": [
-                                    
-                                    {
-                                        "type": "uri",
-                                        "label": "View detail",
-                                        "uri": "http://example.com/page/111"
-                                    }
-                                ]
-                            },
-                            {
-                                "thumbnailImageUrl": "https://example.com/bot/images/item1.jpg",
-                                "imageBackgroundColor": "#FFFFFF",
-                                "title": "this is menu",
-                                "text": "description",
-                                "defaultAction": {
-                                    "type": "uri",
-                                    "label": "View detail",
-                                    "uri": "http://example.com/page/123"
-                                },
-                                "actions": [
-                                    
-                                    {
-                                        "type": "uri",
-                                        "label": "View detail",
-                                        "uri": "http://example.com/page/111"
-                                    }
-                                ]
-                            }
+                           
+                            
                       
                         ],
                         "imageAspectRatio": "rectangle",
@@ -144,7 +108,7 @@ lineapp.post("/", line.middleware(config), function (req, res) {
                         "thumbnailImageUrl": "https://example.com/bot/images/item1.jpg",
                         "imageBackgroundColor": "#FFFFFF",
                         "title": `${prod}`,
-                        "text": `${price}`,
+                        "text": `$ ${price}`,
                         "defaultAction": {
                             "type": "uri",
                             "label": "View detail",
