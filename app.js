@@ -506,9 +506,10 @@ app.use("/linebot", require("./my_routers/line.js"))
 
 // Last Result 404 Error//==========================
 app.use((req, res) => {
-    res.type('text/plain');
+    //res.type('text/plain');
     res.status(404);
-    res.send('404 Page not found.........');
+    console.log("404")
+    res.render('404.hbs',{layout:false});
 });
 
 app.listen(3001, () => {

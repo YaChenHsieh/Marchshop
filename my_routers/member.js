@@ -136,15 +136,16 @@ router.get("/shoplist", (request, response) => {
         console.log("request.session.loginUser inside if")
         console.log(request.session.loginUser)
         console.log(request.session.loginUser.c_id)
-        db.query("SELECT * from ord_items where c_id=?", [request.session.loginUser.c_id], (error, results, fields) => {
+        const qq="Select i.o_id , i.P_name , i.Qty , i.Price, i.P_Time, i.c_id, l.Total_Price from ord_items i right join ord_list l  on i.o_id=l.o_id where i.c_id=?"
+        db.query(qq, [request.session.loginUser.c_id], (error, results, fields) => {
             if (error) {
                 throw error;
             } else {
                 console.log("results from db shoplist")
                 console.log(results)
-                console.log(results[0])
+                //console.log(results[0])
 
-                var array=[]
+                
                 for (let i = 0; i < results.length; i++) {
                     console.log(`第${i}個`)
                     console.log(results[i])

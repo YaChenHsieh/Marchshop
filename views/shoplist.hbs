@@ -1,3 +1,4 @@
+<div id="hide" style="display: none">
 <table class="table table-borderless table-dark">
   <thead>
     <tr>
@@ -18,7 +19,34 @@
    {{/each}}
     </tbody>
 </table>
+</div>  
+<table class="table table-borderless table-dark">
+  <thead>
+    <tr>
+      <th scope="col">Order_No.</th>
+      <th scope="col">Product</th>
+      <th scope="col">Quantity</th>
+      <th scope="col">Purchase Time</th>
+    </tr>
+  </thead>
+  <tbody>
+     {{#each purchase}}
+    <tr>
+      <th scope="row" >{{o_id}}</th>
+      <td class="format time">{{P_name}}</td>
+      <td>{{Qty}}</td>
+      <td>{{P_Time}}</td>
+    </tr>
+   {{/each}}
+    </tbody>
+</table>
+<button type="button" class="btn btn-success" data={{purchase}} id="but">Success</button>
+
 
 <script>
+  $("#but").on("click", function () {
+    $("#hide").removeAttr("style")
+    //alert("45465")
+  })
 
 </script>

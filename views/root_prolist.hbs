@@ -1,7 +1,6 @@
-
 <div>
-    
-<a href="/root/additem" class="btn btn-warning" style="padding:10px; margin:5px">Add Item</a>    
+
+  <a href="/root/additem" class="btn btn-warning" style="padding:10px; margin:5px">Add Item</a>
 </div>
 <table class="table table-borderless table-dark">
   <thead>
@@ -10,22 +9,18 @@
       <th scope="col">Product Image</th>
       <th scope="col">Product Name</th>
       <th scope="col">Price</th>
-      
+
     </tr>
   </thead>
   <tbody>
     {{#each item}}
     <tr>
-      <th scope="row" style=" text-align:center" >{{p_id}}</th>
+      <th scope="row" style=" text-align:center">{{p_id}}</th>
       <td><img style="width: 75px; border-radius:10px;" src="{{Pic}}"></td>
-      <td class="format time"  >{{P_name}}</td>
-      <td >{{Price}}</td>
+      <td class="format time" >{{P_name}}</td>
+      <td>{{Price}}</td>
     </tr>
-   {{/each}}
-    </tbody>
+    {{/each}}
+  </tbody>
 </table>
 
-
-<script>
-
-</script>
