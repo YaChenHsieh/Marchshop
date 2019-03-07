@@ -49,25 +49,25 @@
 <div class="div_right_bottom" style=" margin:0px; padding:0px">
     <section class="container content-section">
 
-        <div class="forcart">
+        <div class="forcart" style="border-radius:10px ">
 
-            <h2 class="section-header">CART</h2>
+            <h4 class="section-header" style="text-align:center">CART</h4>
 
-            <div class="cart-row">
+            {{!-- <div class="cart-row">
                 <span class="cart-item cart-header cart-column">ITEM</span>
                 <span class="cart-price cart-header cart-column">PRICE</span>
                 <span class="cart-quantity cart-header cart-column">QUANTITY</span>
-            </div>
+            </div> --}}
 
             <div class="cart-items">
             </div>
 
-            <div class="cart-total">
+            <div class="cart-total" >
                 <strong class="cart-total-title">Total</strong>
                 <span class="cart-total-price" name="Total" id="Total">$0</span>
             </div>
-
-            <button class="btn btn-primary btn-purchase" type="button">PURCHASE</button>
+            
+            <button class="btn btn-primary btn-purchase" type="button" >PURCHASE</button>
         </div>
     </section>
 
@@ -212,7 +212,7 @@
     <span class="cart-item-title">${title}</span>
     <span class="cart-price cart-column">${price}</span>
     <input class="cart-quantity-input" type="number" value="1" min="1">
-    <button class="btn btn-danger" type="button">REMOVE</button>
+    <button class="btn btn-danger" type="button"">REMOVE</button>
     </div>`
 
         var cartItems = document.getElementsByClassName("cart-items")[0]; //選取cart-items內所有元素<div class="cart-items"></div>

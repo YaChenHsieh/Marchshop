@@ -6,19 +6,20 @@
 <table class="table table-borderless table-dark">
   <thead>
     <tr>
-      <th scope="col">Order_No.</th>
-      <th scope="col">Product</th>
-      <th scope="col">Quantity</th>
+      <th scope="col">Product_No.</th>
       <th scope="col">Product Image</th>
+      <th scope="col">Product Name</th>
+      <th scope="col">Price</th>
+      
     </tr>
   </thead>
   <tbody>
     {{#each item}}
     <tr>
-      <th scope="row" >{{p_id}}</th>
-      <td><img style="width: 75px; height: auto;border-radius:10px;" src="{{Pic}}"></td>
-      <td class="format time">{{P_name}}</td>
-      <td>{{Price}}</td>
+      <th scope="row" style=" text-align:center" >{{p_id}}</th>
+      <td><img style="width: 75px; border-radius:10px;" src="{{Pic}}"></td>
+      <td class="format time"  >{{P_name}}</td>
+      <td >{{Price}}</td>
     </tr>
    {{/each}}
     </tbody>

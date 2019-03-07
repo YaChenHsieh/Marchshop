@@ -101,7 +101,7 @@ lineapp.post("/", line.middleware(config), function (req, res) {
                     console.log(pic)
 
                     var corlobj={
-                        "thumbnailImageUrl": "https://example.com/bot/images/item1.jpg",
+                        "thumbnailImageUrl":`${pic}`,
                         "imageBackgroundColor": "#FFFFFF",
                         "title": `${prod}`,
                         "text": `$ ${price}`,
@@ -124,6 +124,7 @@ lineapp.post("/", line.middleware(config), function (req, res) {
                     console.log("linecolumns")
                     console.log(linecolumns)
                 }//for end
+
 
                 return client.replyMessage(data[0].replyToken, corl)
 
