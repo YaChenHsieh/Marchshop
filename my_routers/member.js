@@ -160,7 +160,7 @@ router.get("/shoplist", (request, response) => {
                 }
                 
                 //console.log(results[0].timeformat)//DB出來要格式化時間：直接在db宣告時給予dateStrings: "false"=>會強迫轉值
-                response.render("shoplist", { purchase: results, member: request.session,})
+                response.render("shoplist", { purchase: results , member: request.session,})
             }
 
         })//db.query end
