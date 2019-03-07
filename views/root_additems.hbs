@@ -68,7 +68,7 @@ border: :solid black 2px;
                 <img id="preview_progressbarTW_img" style="width:300px; height:300px; block" src="#" />
             </div> --}}
 
-            <div><img id="upload img" style="width:300px; height:300px;" />
+            <div id="imgdiv"><img id="upload_img" style="width:300px; height:300px;"  />
             </div>
 
             <div class="yumpic" style=" margin:10px; block;" src="#" text-align="center">
@@ -107,7 +107,8 @@ border: :solid black 2px;
         console.log("image change")
         let a = $("#imgurl").val()
         console.log(a)
-        $("#upload img").attr("src", "a")
+        //$("#imgdiv").html(`<img id="upload img" style="width:300px; height:300px;"  src='${a}'/>`)
+        $("#upload_img").attr("src", `${a}`)
     });
 
 

@@ -9,16 +9,16 @@
       <th scope="col">Order_No.</th>
       <th scope="col">Product</th>
       <th scope="col">Quantity</th>
-      <th scope="col">Purchase Time</th>
+      <th scope="col">Product Image</th>
     </tr>
   </thead>
   <tbody>
     {{#each item}}
     <tr>
       <th scope="row" >{{p_id}}</th>
+      <td><img style="width: 75px; height: auto;border-radius:10px;" src="{{Pic}}"></td>
       <td class="format time">{{P_name}}</td>
       <td>{{Price}}</td>
-      <td>{{Pic}}</td>
     </tr>
    {{/each}}
     </tbody>
