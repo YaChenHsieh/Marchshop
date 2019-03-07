@@ -29,7 +29,7 @@ addprod.use((req, res, next) => {
         console.log("不是root")
         console.log(req.session.loginUser.Name)
         //res.redirect("/member")
-        res.json({ info: "您無權訪問", rootTF: false, type: "danger" })
+        res.json({ info: "您無權訪問", rootTF: false, type: "danger", })
         return;
 
     }
@@ -56,7 +56,7 @@ addprod.get("/customer", (request, response) => {
         // console.log(results);   //測試資料庫寫入資料為何
         // response.send("ok");   //測試資料庫寫入與否寫入=> 可看出資料回傳的值事多少
 
-        response.render("customer.hbs", { customer: results, member: request.session }) //edit BD format first==> go customer.hbs add{{# sales}}
+        response.render("customer.hbs", { customer: results, member: request.session, }) //edit BD format first==> go customer.hbs add{{# sales}}
         // console.log(results)
     });
 });
@@ -74,7 +74,7 @@ addprod.get("/customer/delete/:c_id", (req, res) => {
 
 //step 3. 刪除 ajax delete
 addprod.get("/customer/delete2/:c_id", (req, res) => {
-console.log("COMING to DEELETE")
+    console.log("COMING to DEELETE")
     db.query("DELETE FROM cus_list WHERE c_id=?", [req.params.c_id], (error, results, fields) => {
         //    console.log(results)
         res.json(results);
@@ -93,7 +93,7 @@ addprod.get("/customer/edit/:c_id", (req, res) => {
             res.send("No Data!");
         }
         else {
-            res.render("customer_edit.hbs", { item: results[0], member: req.session });
+            res.render("customer_edit.hbs", { item: results[0], member: req.session, });
         };
     });//dbquery end
 })//app.get
@@ -174,7 +174,7 @@ addprod.get("/root_prolist", (request, response) => {
             console.log("results============================================")
             console.log(results[0])// 值是[{}]，陣列包物件
             console.log(results[0].p_id)
-            response.render("root_prolist.hbs", { item: results, member: request.session })
+            response.render("root_prolist.hbs", { item: results, member: request.session, })
         } //回傳item:result不用加[0]==>因為到前端hbs{#each}他是要讀取陣列！
     })
 
@@ -192,13 +192,14 @@ addprod.get("/additem", (req, res) => {
 addprod.post("/additem", (req, res) => {
     console.log("inside additem back")
     console.log(req.body);
-    let addprod = JSON.parse(JSON.stringify(req.body))
+    let addprods = JSON.parse(JSON.stringify(req.body))
     console.log("看看Ｘ================")
-    console.log(addprod)
-    console.log(addprod.P_name)
-    console.log(addprod.price)
+    console.log(addprods)
+    console.log(addprods.prod_name)
+    console.log(addprods.prod_price)
+    console.log(addprods.prod_url)
     db.query("SELECT * FROM pro_list WHERE P_name=?",
-        [addprod.P_name],
+        [addprods.prod_name],
         (error, results, fields) => {
             console.log("results 去找PRO_LIST")
             console.log(results)
@@ -207,8 +208,21 @@ addprod.post("/additem", (req, res) => {
                 res.json({ msg: "品名重複" });
             }//if(results.length) end
             else {
+                console.log("into else")
+                db.query("INSERT INTO pro_list (P_name, Price, Pic) values (?,?,?);",
+                    [addprods.prod_name, addprods.prod_price, addprods.prod_url],
+                    (error, results, fields) => {
+                        if (error) {
+                            console.log(error)
+                        }
+                        else {
+                            res.json({ alert: "品項新增成功" });
+                        }//else
+                    }
 
-            }
+                )//dbinsert end
+
+            }//else end
 
 
         })//db.query

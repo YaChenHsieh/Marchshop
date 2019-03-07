@@ -51,31 +51,40 @@ border: :solid black 2px;
 }
 
 
+
 </style>
 
 <div id="info" class="alert" style="display:none"></div>
 
 
 <div class="form-div container">
-    <form class="" id="creatform" name="item_add" method="post">
+    <form class="" id="creatform" name="item_add" method="post" action="/somewhere/to/upload" enctype="multipart/form-data">
 
         <div class="inform">
+            {{!-- 接收上傳檔案 --}}
+            {{!-- <div class="yumpic" style="border:solid black 3px; margin:10px; width:300px; height:300px; block "
+                src="#" text-align="center">
+                <input type="file" id="progressbarTWInput" accept="image/gif, image/jpeg, image/png" />
+                <img id="preview_progressbarTW_img" style="width:300px; height:300px; block" src="#" />
+            </div> --}}
 
-            <div class="yumpic" style="border:solid black 3px; margin:10px width:300px height:300px " text-align="center">
-                <img src="/img/{{name}}.jpg" alt="" width="300" height="300">
+            <div><img id="upload img" style="width:300px; height:300px;" />
             </div>
 
-
+            <div class="yumpic" style=" margin:10px; block;" src="#" text-align="center">
+                <label for="P_name">Image Url :</label><span id="check_url"></span>
+                <input type="text" id="imgurl" name="prod_url" />
+            </div>
 
             <div class="form-group">
                 <label for="P_name">Product Name :</label><span id="check_pname"></span>
-                <input type="text" class="form-control" id="P_name" value="" name="P_name">
+                <input type="text" class="form-control" id="P_name" value="" name="prod_name">
             </div>
 
 
             <div class="form-group">
-                <label for="price">Price : </label> <span id="check_price"></span>
-                <input type="text" class="form-control" id="price" value="" name="price">
+                <label for="price">Price : </label><span id="check_price"></span>
+                <input type="text" class="form-control" id="price" value="" name="prod_price">
             </div>
 
             <div class="form-group">
@@ -86,8 +95,42 @@ border: :solid black 2px;
     </form>
 </div>
 
+
+
+
+
+
+
+
 <script>
+    $("#imgurl").change(function () {
+        console.log("image change")
+        let a = $("#imgurl").val()
+        console.log(a)
+        $("#upload img").attr("src", "a")
+    });
+
+
+
+    //Upload pics
+    //$("#progressbarTWInput").change(function () {
+    //   readURL(this);
+    //});
+
+    //function readURL(input) {
+    //if (input.files && input.files[0]) {
+    // var reader = new FileReader();
+    //reader.onload = function (e) {
+    //      $("#preview_progressbarTW_img").attr('src', e.target.result);
+    //    }
+    //      reader.readAsDataURL(input.files[0]);
+    //    }
+    // } 
+
     //jquery檢查項目是否填寫
+    const checknumb = /^[0-9]*$/;
+    const checkword = /^(?=.*[a-zA-Z0-9]).{1,}$/
+
     $("#P_name").blur(function () {
         if (!$("#P_name").val()) {
             $("#check_pname").html("<i class='fas fa-times-circle'>請填寫產品名稱!</i>").css("color", "red");
@@ -95,6 +138,10 @@ border: :solid black 2px;
         if ($("#P_name").val()) {
             $("#check_pname").html("")
         }
+        if ($("#P_name").val() && !checkword.test($("#P_name").val())) {
+            $("#check_pname").html("<i class='fas fa-times-circle'>請輸入英文產品名!</i>").css("color", "red");
+        }
+
     })
 
     $("#price").blur(function () {
@@ -104,25 +151,66 @@ border: :solid black 2px;
         if ($("#price").val()) {
             $("#check_price").html("")
         }
+        if ($("#price").val() && !checknumb.test($("#price").val())) {
+            $("#check_price").html("<i class='fas fa-times-circle'>請輸入整數位阿拉伯數字!</i>").css("color", "orange");
+        }
+
     })
 
+
+
+    $("#imgurl").blur(function () {
+        if (!$("#imgurl").val()) {
+            $("#check_url").html("<i class='fas fa-times-circle'>請輸入圖片URL!</i>").css("color", "red");
+        }
+        if ($("#imgurl").val()) {
+            $("#check_url").html("")
+        }
+
+    })
+
+
     //post看看是否有填寫，以及是否產品名稱重複
+    var name_x = false;
+    var price_y = false;
+    var url_z = false;
     function additem() {
-       alert("additem")
+        //alert("additem")
 
         if (!$("#P_name").val()) {
             $("#check_pname").html("<i class='fas fa-times-circle'>請填寫產品名稱!</i>").css("color", "red");
+            name_x = false;
+        }
+        if ($("#P_name").val() && !checkword.test($("#P_name").val())) {
+            $("#check_pname").html("<i class='fas fa-times-circle'>請輸入英文產品名!</i>").css("color", "red");
+            name_x = false;
         }
         if ($("#P_name").val()) {
             $("#check_pname").html("")
+            name_x = true;
         }
         if (!$("#price").val()) {
             $("#check_price").html("<i class='fas fa-times-circle'>請填寫價格!</i>").css("color", "red");
+            price_y = false;
         }
         if ($("#price").val()) {
             $("#check_price").html("")
+            price_y = true;
         }
-
+        if ($("#price").val() && !checknumb.test($("#price").val())) {
+            $("#check_price").html("<i class='fas fa-times-circle'>請輸入整數位阿拉伯數字!</i>").css("color", "orange");
+            price_y = false;
+        }
+        if (!$("#imgurl").val()) {
+            $("#check_url").html("<i class='fas fa-times-circle'>請輸入圖片URL!</i>").css("color", "red");
+            url_z = false;
+        }
+        if ($("#imgurl").val()) {
+            $("#check_url").html("")
+            url_z = true;
+        }
+        
+        if(name_x == true && price_y == true && url_z == true){
         $.ajax({
             url: "/root/additem",
             data: $(item_add).serialize(),
@@ -131,12 +219,20 @@ border: :solid black 2px;
             success: function (res, status, jqXHR) {
                 console.log(status)
                 console.log(res)
-                console.log(res.info)
+                console.log(res.msg)
+                if (res.msg) {
+                    $("#check_pname").html(`<i class='fas fa-times-circle'>${res.msg}</i>`).css("color", "red");
+                }
+                if(res.alert){
+                    alert(res.alert)
+                }
+
+
             }//success end
 
         })//ajax end
 
-
+        }//if true end
     }//function additem() end
 
 

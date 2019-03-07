@@ -37,7 +37,7 @@ router.use((req, res, next) => {
 router.get("/", (req, res) => {
     //console.log("MEMBER in req.session")
     //console.log(req.session)
-    res.render("member.hbs", { member: req.session })
+    res.render("member.hbs", { member: req.session,  })
 
 })
 
@@ -52,7 +52,7 @@ router.get("/member_edit", (req, res) => {
             //console.log("results[0]")
             //console.log(results[0])
             const member_info = results[0]
-            res.render("customer_mbr_edit.hbs", { m_info: member_info, member: req.session });
+            res.render("customer_mbr_edit.hbs", { m_info: member_info, member: req.session,  });
         };
 
     })//db.query end
@@ -69,7 +69,9 @@ router.post("/member_edit", (req, res) => {
     {
         success: false,    //先給false，因為一開始還沒新增成功
         affectedRows: 0,    //因為尚未新增，所以為零
-        info: "每個欄位都必需要填"
+        info: "每個欄位都必需要填",
+      
+
     };
     //console.log("req.body============if只有req會超級無敵長")
     //console.log(req.body)
@@ -87,7 +89,8 @@ router.post("/member_edit", (req, res) => {
                 //console.log("email重複")
                 res.json({
                     success: false,    //先給false，因為一開始還沒新增成功
-                    info: "信箱重複"
+                    info: "信箱重複",
+                    
                 });
                 return;
             }//if 有信箱重複
@@ -138,23 +141,25 @@ router.get("/shoplist", (request, response) => {
                 throw error;
             } else {
                 console.log("results from db shoplist")
+                console.log(results)
                 console.log(results[0])
-                console.log(results[0].P_Time)
-                const value = Object.values(results[0])
-                console.log("results[0].time======================")
-                console.log(value)
 
-                //console.log(results)
+                var array=[]
                 for (let i = 0; i < results.length; i++) {
-                    //console.log(`第${i}個`)
-                    //console.log(results[0].P_Time)
-                    // var time = moment(results[0].P_Time[i]).format("YYYY-MM-DD hh:mm:ss")
-                    // console.log(time)
-                    // results[0].timeformat = time;
+                    console.log(`第${i}個`)
+                    console.log(results[i])
+                //    var obj={}
+                //    obj.oid=results[i].o_id
+                //    obj.cid=results[i].c_id
+                //    obj.prod=results[i].P_name
+                //    obj.qty=results[i].Qty
+                //    obj.price=results[i].Price
+                //    obj.ptime=results[i].P_Time
+                //    console.log(obj)
                 }
-                console.log("TOTAL results[0].timeformat")
-                //console.log(results[0].timeformat)
-                response.render("shoplist", { purchase: results, member: request.session })
+                
+                //console.log(results[0].timeformat)//DB出來要格式化時間：直接在db宣告時給予dateStrings: "false"=>會強迫轉值
+                response.render("shoplist", { purchase: results, member: request.session,})
             }
 
         })//db.query end

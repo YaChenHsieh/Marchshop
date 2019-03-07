@@ -81,11 +81,7 @@ lineapp.post("/", line.middleware(config), function (req, res) {
                     "altText": "this is a carousel template",
                     "template": {
                         "type": "carousel",
-                        "columns": [
-                           
-                            
-                      
-                        ],
+                        "columns": [],
                         "imageAspectRatio": "rectangle",
                         "imageSize": "cover"
                     }
@@ -129,10 +125,7 @@ lineapp.post("/", line.middleware(config), function (req, res) {
                     console.log(linecolumns)
                 }//for end
 
-
                 return client.replyMessage(data[0].replyToken, corl)
-
-
 
             })//query end
 
