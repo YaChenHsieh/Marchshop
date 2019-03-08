@@ -37,7 +37,7 @@ router.use((req, res, next) => {
 router.get("/", (req, res) => {
     //console.log("MEMBER in req.session")
     //console.log(req.session)
-    res.render("member.hbs", { member: req.session,  })
+    res.render("member.hbs", { member: req.session, })
 
 })
 
@@ -52,7 +52,7 @@ router.get("/member_edit", (req, res) => {
             //console.log("results[0]")
             //console.log(results[0])
             const member_info = results[0]
-            res.render("customer_mbr_edit.hbs", { m_info: member_info, member: req.session,  });
+            res.render("customer_mbr_edit.hbs", { m_info: member_info, member: req.session, });
         };
 
     })//db.query end
@@ -70,7 +70,7 @@ router.post("/member_edit", (req, res) => {
         success: false,    //先給false，因為一開始還沒新增成功
         affectedRows: 0,    //因為尚未新增，所以為零
         info: "每個欄位都必需要填",
-      
+
 
     };
     //console.log("req.body============if只有req會超級無敵長")
@@ -90,7 +90,7 @@ router.post("/member_edit", (req, res) => {
                 res.json({
                     success: false,    //先給false，因為一開始還沒新增成功
                     info: "信箱重複",
-                    
+
                 });
                 return;
             }//if 有信箱重複
@@ -136,40 +136,65 @@ router.get("/shoplist", (request, response) => {
         console.log("request.session.loginUser inside if")
         console.log(request.session.loginUser)
         console.log(request.session.loginUser.c_id)
-        const qq="Select i.o_id , i.P_name , i.Qty , i.Price, i.P_Time, i.c_id, l.Total_Price from ord_items i right join ord_list l  on i.o_id=l.o_id where i.c_id=?"
-        db.query(qq, [request.session.loginUser.c_id], (error, results, fields) => {
-            if (error) {
-                throw error;
-            } else {
-                console.log("results from db shoplist")
-                console.log(results)
-                //console.log(results[0])
 
-                
-                for (let i = 0; i < results.length; i++) {
-                    console.log(`第${i}個`)
-                    console.log(results[i])
-                //    var obj={}
-                //    obj.oid=results[i].o_id
-                //    obj.cid=results[i].c_id
-                //    obj.prod=results[i].P_name
-                //    obj.qty=results[i].Qty
-                //    obj.price=results[i].Price
-                //    obj.ptime=results[i].P_Time
-                //    console.log(obj)
+        db.query("SELECT * FROM ord_list WHERE c_id=?",
+            [request.session.loginUser.c_id],
+            (error, results, fields) => {
+                if (error) {
+                    throw error;
+                } else {
+                    console.log("results from db shoplist")
+                    console.log(results)
+                    response.render("shoplist", { purchase: results, member: request.session, })
                 }
-                
-                //console.log(results[0].timeformat)//DB出來要格式化時間：直接在db宣告時給予dateStrings: "false"=>會強迫轉值
-                response.render("shoplist", { purchase: results , member: request.session,})
-            }
-
-        })//db.query end
+            });
 
     } else {
         response.redirect("/login");
     }
 
 });
+
+
+
+
+//router.post
+router.post("/shoplist", (req, res) => {
+
+    console.log("後端訂單編號")
+    console.log(req.body.ordno)
+    console.log(req.session.loginUser.c_id)
+    if (req.body) {
+        const qq = "Select i.o_id , i.P_name , i.Qty , i.Price, i.P_Time, i.c_id, l.Total_Price from ord_items i right join ord_list l  on i.o_id=l.o_id where i.c_id=? AND i.o_id=?"
+        db.query(qq, [req.session.loginUser.c_id, req.body.ordno], (error, results, fields) => {
+            if (error) {
+                throw error;
+            } else {
+                console.log("results from db shoplist")
+                console.log(results)
+                res.json({buy: results, member: req.session})
+                //res.render("shoplist.hbs", { purchase: results, member: req.session, })
+                //console.log(results[0])
+                // for (let i = 0; i < results.length; i++) {
+                //     console.log(`第${i}個`)
+                //     console.log(results[i])
+                //     //    var obj={}
+                //     //    obj.oid=results[i].o_id
+                //     //    obj.cid=results[i].c_id
+                //     //    obj.prod=results[i].P_name
+                //     //    obj.qty=results[i].Qty
+                //     //    obj.price=results[i].Price
+                //     //    obj.ptime=results[i].P_Time
+                //     //    console.log(obj)
+                // }
+                //console.log(results[0].timeformat)//DB出來要格式化時間：直接在db宣告時給予dateStrings: "false"=>會強迫轉值
+            }//else end
+
+        })//db.query end
+
+    }//if end
+
+})
 
 
 

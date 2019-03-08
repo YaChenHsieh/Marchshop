@@ -1,52 +1,100 @@
-<div id="hide" style="display: none">
-<table class="table table-borderless table-dark">
-  <thead>
-    <tr>
-      <th scope="col">Order_No.</th>
-      <th scope="col">Product</th>
-      <th scope="col">Quantity</th>
-      <th scope="col">Purchase Time</th>
-    </tr>
-  </thead>
-  <tbody>
-     {{#each purchase}}
-    <tr>
-      <th scope="row" >{{o_id}}</th>
-      <td class="format time">{{P_name}}</td>
-      <td>{{Qty}}</td>
-      <td>{{P_Time}}</td>
-    </tr>
-   {{/each}}
+<style>
+  .oid {
+    color: goldenrod;
+    cursor: pointer;
+  }
+</style>
+
+{{!-- <div id="hide" style="display: none"> --}}
+  <table class="table table-borderless table-dark">
+    <thead>
+      <tr>
+        <th scope="col">Order_No.</th>
+        <th scope="col">Total Price</th>
+        <th scope="col">Purchase Time</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each purchase}}
+      <tr>
+        <th scope="row" class="oid" id="oid">{{o_id}}</th>
+        <td>{{Total_Price}}</td>
+        <td>{{P_Time}}</td>
+      </tr>
+      {{/each}}
     </tbody>
-</table>
-</div>  
-<table class="table table-borderless table-dark">
-  <thead>
-    <tr>
-      <th scope="col">Order_No.</th>
-      <th scope="col">Product</th>
-      <th scope="col">Quantity</th>
-      <th scope="col">Purchase Time</th>
-    </tr>
-  </thead>
-  <tbody>
-     {{#each purchase}}
-    <tr>
-      <th scope="row" >{{o_id}}</th>
-      <td class="format time">{{P_name}}</td>
-      <td>{{Qty}}</td>
-      <td>{{P_Time}}</td>
-    </tr>
-   {{/each}}
-    </tbody>
-</table>
-<button type="button" class="btn btn-success" data={{purchase}} id="but">Success</button>
+  </table>
 
 
-<script>
-  $("#but").on("click", function () {
-    $("#hide").removeAttr("style")
-    //alert("45465")
-  })
+  <table class="table table-borderless table-dark" id="trapp">
+    <thead id="show" style="display:none">
+      <tr>
+        <th scope="col">Product</th>
+        <th scope="col">Quantity</th>
+        <th scope="col">Price</th>
+      </tr>
+    </thead>
+     <tbody id="tbd">
 
-</script>
+     </tbody>
+  </table>
+
+
+
+  <script>
+    /*{
+      {
+        !--$("#but").on("click", function () {
+          $("#hide").removeAttr("style")
+          //alert("45465")
+        }) --}
+    }
+    */
+
+    $(".oid").on("click", function () {
+      alert("click")
+
+      $('.tradd').remove()
+      const ordno = $(this).text()
+      console.log("訂單編號")
+      console.log(ordno)
+      $("#show").show();
+
+      $.ajax({
+        url: '/member/shoplist',
+        data: `ordno=${ordno}`, //注意格式須字串，搭配下面的contentType
+        type: "post",
+        dataType: 'json',
+        success: function (res, status, jqXHR) {
+          console.log(status)
+          console.log(res)
+          console.log(res.buy[0].P_name)
+          console.log(res.buy.length)
+
+          for (let i = 0; i < res.buy.length; i++) {
+            const prodname = res.buy[i].P_name
+            const prodprice = res.buy[i].Price
+            const prodqty = res.buy[i].Qty
+            console.log(`第${i}次`)
+            console.log("prodname")
+            console.log(prodname)
+            console.log("prodprice")
+            console.log(prodprice)
+            console.log("prodqty")
+            console.log(prodqty)
+            $("#trapp").append(`
+           
+            <tr class="tradd">
+            <td class="format time">${prodname}</td>
+            <td>${prodprice}</td>
+            <td>${prodqty}</td>
+            </tr>
+            `)//append end
+          }//for end
+        }
+      })
+
+
+    })//oid obclick
+
+  </script>
