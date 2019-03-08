@@ -145,7 +145,7 @@ router.get("/shoplist", (request, response) => {
                 } else {
                     console.log("results from db shoplist")
                     console.log(results)
-                    response.render("shoplist", { purchase: results, member: request.session, })
+                    response.render("shoplist", { purchase: results, member: request.session})
                 }
             });
 
